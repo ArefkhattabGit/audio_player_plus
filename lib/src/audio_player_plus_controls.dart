@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'audio_player_plus_widget.dart';
 
 class AudioPlayerController {
