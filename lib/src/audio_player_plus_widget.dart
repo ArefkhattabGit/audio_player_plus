@@ -4,6 +4,8 @@ import 'package:audioplayers/audioplayers.dart';
 
 class AudioPlayerPlusWidget extends StatefulWidget {
   final String audioPath;
+
+  /// Optional: pass a custom widget builder to change the UI.
   final Widget Function(
       BuildContext context,
       bool isPlaying,
@@ -33,10 +35,11 @@ class AudioPlayerPlusWidgetState extends State<AudioPlayerPlusWidget> {
   @override
   void initState() {
     super.initState();
-    loadDuration();
-    setupDurationListeners();
+    loadDuration(); // Get the total audio duration before playing
+    setupDurationListeners(); // Start listening for duration and progress updates
   }
 
+  /// listeners to update UI with current time and total duration
   void setupDurationListeners() {
     audioPlayer.onDurationChanged.listen((d) {
       setState(() => total = d);
@@ -54,6 +57,7 @@ class AudioPlayerPlusWidgetState extends State<AudioPlayerPlusWidget> {
     });
   }
 
+  /// Preload the audio to fetch its duration
   Future<void> loadDuration() async {
     try {
       await audioPlayer.setSourceDeviceFile(widget.audioPath);
@@ -66,6 +70,7 @@ class AudioPlayerPlusWidgetState extends State<AudioPlayerPlusWidget> {
     }
   }
 
+  /// Play the audio and register this player as the active one
   Future<void> play() async {
     AudioPlayerController().register(this);
     await audioPlayer.setSourceDeviceFile(widget.audioPath);
@@ -73,11 +78,13 @@ class AudioPlayerPlusWidgetState extends State<AudioPlayerPlusWidget> {
     setState(() => isPlaying = true);
   }
 
+  /// Pause the audio
   Future<void> pause() async {
     await audioPlayer.pause();
     setState(() => isPlaying = false);
   }
 
+  /// Stop the audio and reset state
   Future<void> stop() async {
     await audioPlayer.stop();
     setState(() {
@@ -93,6 +100,7 @@ class AudioPlayerPlusWidgetState extends State<AudioPlayerPlusWidget> {
     super.dispose();
   }
 
+  /// Toggle between play and pause
   void togglePlayPause() {
     isPlaying ? pause() : play();
   }
@@ -113,6 +121,7 @@ class AudioPlayerPlusWidgetState extends State<AudioPlayerPlusWidget> {
     );
   }
 
+  /// Default UI shown if no custom builder is provided
   Widget defaultUI(
       BuildContext context,
       bool isPlaying,
