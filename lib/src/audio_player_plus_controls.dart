@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
+import 'audio_player_plus_widget.dart';
 
-Widget audioPlayerPlusControls({
-  required bool isPlaying,
-  required VoidCallback onPlayPause,
-  required VoidCallback onStop,
-}) {
-  return Row(
-    children: [
-      IconButton(
-        icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-        onPressed: onPlayPause,
-      ),
-      IconButton(
-        icon: const Icon(Icons.stop),
-        onPressed: onStop,
-      ),
-    ],
-  );
+class AudioPlayerController {
+  static final AudioPlayerController _instance = AudioPlayerController._internal();
+  AudioPlayerPlusWidgetState? _currentPlayer;
+
+  factory AudioPlayerController() => _instance;
+
+  AudioPlayerController._internal();
+
+  void register(AudioPlayerPlusWidgetState player) {
+    if (_currentPlayer != null && _currentPlayer != player) {
+      _currentPlayer!.stop();
+    }
+    _currentPlayer = player;
+  }
+
+  void unregister(AudioPlayerPlusWidgetState player) {
+    if (_currentPlayer == player) {
+      _currentPlayer = null;
+    }
+  }
 }

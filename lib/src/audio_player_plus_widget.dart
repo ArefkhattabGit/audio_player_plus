@@ -1,115 +1,129 @@
+import 'package:audio_player_plus/audio_player_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'audio_player_plus_controls.dart';
-import 'utils.dart';
 
 class AudioPlayerPlusWidget extends StatefulWidget {
-  final String filePath;
+  final String audioPath;
   final Widget Function(
       BuildContext context,
       bool isPlaying,
-      Duration current,
-      Duration total,
+      String currentAudioDuration,
+      String endAudioDuration,
       VoidCallback onPlayPause,
       VoidCallback onStop,
       )? customBuilder;
 
   const AudioPlayerPlusWidget({
     super.key,
-    required this.filePath,
+    required this.audioPath,
     this.customBuilder,
   });
 
   @override
-  _AudioPlayerPlusWidgetState createState() => _AudioPlayerPlusWidgetState();
+  AudioPlayerPlusWidgetState createState() => AudioPlayerPlusWidgetState();
 }
 
-class _AudioPlayerPlusWidgetState extends State<AudioPlayerPlusWidget> {
-  final AudioPlayer _audioPlayer = AudioPlayer();
+class AudioPlayerPlusWidgetState extends State<AudioPlayerPlusWidget> {
+  final AudioPlayer audioPlayer = AudioPlayer();
 
-  Duration _current = Duration.zero;
-  Duration _total = Duration.zero;
-  bool _isPlaying = false;
+  Duration current = Duration.zero;
+  Duration total = Duration.zero;
+  bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
-    _setupListeners();
+    loadDuration();
+    setupDurationListeners();
   }
 
-  void _setupListeners() {
-    _audioPlayer.onDurationChanged.listen((d) {
-      setState(() => _total = d);
+  void setupDurationListeners() {
+    audioPlayer.onDurationChanged.listen((d) {
+      setState(() => total = d);
     });
 
-    _audioPlayer.onPositionChanged.listen((p) {
-      setState(() => _current = p);
+    audioPlayer.onPositionChanged.listen((p) {
+      setState(() => current = p);
     });
 
-    _audioPlayer.onPlayerComplete.listen((event) {
+    audioPlayer.onPlayerComplete.listen((event) {
       setState(() {
-        _isPlaying = false;
-        _current = Duration.zero;
+        isPlaying = false;
+        current = Duration.zero;
       });
     });
   }
 
-  Future<void> _play() async {
-    await _audioPlayer.setSourceDeviceFile(widget.filePath);
-    await _audioPlayer.resume();
-    setState(() => _isPlaying = true);
+  Future<void> loadDuration() async {
+    try {
+      await audioPlayer.setSourceDeviceFile(widget.audioPath);
+      final dur = await audioPlayer.getDuration();
+      if (dur != null) {
+        setState(() => total = dur);
+      }
+    } catch (e) {
+      debugPrint('Failed to load duration: $e');
+    }
   }
 
-  Future<void> _pause() async {
-    await _audioPlayer.pause();
-    setState(() => _isPlaying = false);
+  Future<void> play() async {
+    AudioPlayerController().register(this);
+    await audioPlayer.setSourceDeviceFile(widget.audioPath);
+    await audioPlayer.resume();
+    setState(() => isPlaying = true);
   }
 
-  Future<void> _stop() async {
-    await _audioPlayer.stop();
+  Future<void> pause() async {
+    await audioPlayer.pause();
+    setState(() => isPlaying = false);
+  }
+
+  Future<void> stop() async {
+    await audioPlayer.stop();
     setState(() {
-      _isPlaying = false;
-      _current = Duration.zero;
+      isPlaying = false;
+      current = Duration.zero;
     });
   }
 
   @override
   void dispose() {
-    _audioPlayer.dispose();
+    AudioPlayerController().unregister(this);
+    audioPlayer.dispose();
     super.dispose();
+  }
+
+  void togglePlayPause() {
+    isPlaying ? pause() : play();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Use the custom builder if provided, else use the default UI
-    final builder = widget.customBuilder ?? _defaultUI;
+    final builder = widget.customBuilder ?? defaultUI;
+    final formattedCurrent = Utils.formatDuration(current);
+    final formattedTotal = Utils.formatDuration(total);
 
     return builder(
       context,
-      _isPlaying,
-      _current,
-      _total,
-      _togglePlayPause,
-      _stop,
+      isPlaying,
+      formattedCurrent,
+      formattedTotal,
+      togglePlayPause,
+      stop,
     );
   }
 
-  void _togglePlayPause() {
-    _isPlaying ? _pause() : _play();
-  }
-
-  // Default UI if no custom builder is provided
-  Widget _defaultUI(
+  Widget defaultUI(
       BuildContext context,
       bool isPlaying,
-      Duration current,
-      Duration total,
+      String formattedCurrent,
+      String formattedTotal,
       VoidCallback onPlayPause,
       VoidCallback onStop,
       ) {
     return Column(
       children: [
-        Text("${formatDuration(current)} / ${formatDuration(total)}"),
+        Text("$formattedCurrent / $formattedTotal"),
         Row(
           children: [
             IconButton(
