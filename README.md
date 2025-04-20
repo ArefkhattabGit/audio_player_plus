@@ -1,6 +1,6 @@
 # 🎧 AudioPlayerPlusPlugin
 
-A customizable Flutter audio player widget using [`audioplayers`](https://pub.dev/packages/audioplayers), designed to be reusable, flexible, and easy to integrate in list views with automatic stop/play management.
+A customizable Flutter audio player widget designed to be reusable, flexible, and easy to integrate in list views with automatic stop/play management.
 
 ---
 
