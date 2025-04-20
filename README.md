@@ -28,6 +28,6 @@ Add to your `pubspec.yaml`:
 dependencies:
   flutter:
     sdk: flutter
-  audio_player_plus:<>
+  audio_player_plus:^<version>
 
 
