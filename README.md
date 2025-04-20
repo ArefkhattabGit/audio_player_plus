@@ -17,7 +17,7 @@ A customizable Flutter audio player widget using [`audioplayers`](https://pub.de
 ##  Getting Started
 
 ## Demo
-![Demo](https://github.com/ArefkhattabGit/audio_player_plus/blob/master/lib/screenshots/demo.png)
+![Demo](https://raw.githubusercontent.com/ArefkhattabGit/audio_player_plus/refs/heads/master/lib/screenshots/demo.png)
 
 
 ### 1. Install dependencies
