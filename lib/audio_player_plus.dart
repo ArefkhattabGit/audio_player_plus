@@ -1,5 +1,4 @@
 library audio_player_plus;
 
-export 'src/audio_player_plus_widget.dart';
-export 'src/audio_player_plus_controls.dart';
-export 'src/utils.dart';
+export 'src/widgets/audio_player_plus_widget.dart';
+export 'src/controllers/audio_player_plus_controls.dart';

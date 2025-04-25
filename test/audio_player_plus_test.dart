@@ -8,7 +8,7 @@ void main() {
 
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
-        body: AudioPlayerPlusWidget(audioPath: filePath),
+        body: AudioPlayerPlus(audioPath: filePath),
       ),
     ));
 
