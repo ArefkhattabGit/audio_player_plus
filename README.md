@@ -75,12 +75,15 @@ class _DemoAppStateState extends State<DemoAppState> {
   }
 }
 ```
+
 `showAudioSlider` (Optional option to show/hide Slider by default enabled)
 
 
-<img src="https://raw.githubusercontent.com/ArefkhattabGit/audio_player_plus/refs/heads/master/lib/screenshots/custom_audio.png" alt="AudioPlayerPlus" width="372" height="752"/>
 
 ### Use Custom Ui
+
+<img src="https://raw.githubusercontent.com/ArefkhattabGit/audio_player_plus/refs/heads/master/lib/screenshots/custom_audio.png" alt="AudioPlayerPlus" width="372" height="752"/>
+
 Custom audio player using `customBuilder`
 
 ```dart 
