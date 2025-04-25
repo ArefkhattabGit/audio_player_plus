@@ -27,7 +27,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  audio_player_plus: ^0.1.0
+  audio_player_plus: ^0.1.1
 ```
 
 ### Use
@@ -73,6 +73,7 @@ class _DemoAppStateState extends State<DemoAppState> {
   }
 }
 ```
+
 <img src="https://raw.githubusercontent.com/ArefkhattabGit/audio_player_plus/refs/heads/master/lib/screenshots/custom_audio.png" alt="AudioPlayerPlus" width="372" height="752"/>
 
 ### Use Custom Ui
