@@ -32,6 +32,7 @@ class _DemoAppStateState extends State<DemoAppState> {
       debugShowCheckedModeBanner: false,
       title: 'Custom Audio Player Plus Demo',
       home: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text('Custom Audio Player Plus Demo'),
           elevation: 4,
@@ -39,7 +40,7 @@ class _DemoAppStateState extends State<DemoAppState> {
         body: ListView.builder(
           padding: EdgeInsets.all(8.0),
           itemCount: audioUrls.length,
-          itemBuilder: (context, index) => AudioPlayerPlus(
+          itemBuilder: (context, index) => AudioPlayerPlus(showAudioSlider: true,
             audioPath: audioUrls[index],
             customBuilder: (
               context,

@@ -16,6 +16,7 @@ A customizable Flutter audio player, designed to be reusable, flexible, and easy
 ---
 
 ## Demo
+
 <img src="https://raw.githubusercontent.com/ArefkhattabGit/audio_player_plus/refs/heads/master/lib/screenshots/demo.png" alt="AudioPlayerPlus" width="372" height="752"/>
 
 
@@ -27,13 +28,14 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  audio_player_plus: ^0.1.1
+  audio_player_plus: ^0.1.2
 ```
 
 ### Use
 Simple use:
 
 ```dart
+
 import 'package:audio_player_plus/audio_player_plus.dart';
 import 'package:flutter/material.dart';
  
@@ -55,17 +57,17 @@ class _DemoAppStateState extends State<DemoAppState> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Audio Player Plus Demo',
+      title: 'Default Player Plus Demo',
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Audio Player Plus Demo'),
+          title: const Text('Default Player Plus Demo'),
           elevation: 4,
         ),
         body: ListView.builder(
           padding: EdgeInsets.all(8.0),
           itemCount: audioUrls.length,
           itemBuilder: (context, index) => AudioPlayerPlus(
-            audioSource: audioUrls[index],
+             audioSource: audioUrls[index],
           ),
         ),
       ),
@@ -73,11 +75,13 @@ class _DemoAppStateState extends State<DemoAppState> {
   }
 }
 ```
+`showAudioSlider` (Optional option to show/hide Slider by default enabled)
+
 
 <img src="https://raw.githubusercontent.com/ArefkhattabGit/audio_player_plus/refs/heads/master/lib/screenshots/custom_audio.png" alt="AudioPlayerPlus" width="372" height="752"/>
 
 ### Use Custom Ui
-Customizable audio player widget
+Custom audio player using `customBuilder`
 
 ```dart 
 class DemoAppState extends StatefulWidget {
