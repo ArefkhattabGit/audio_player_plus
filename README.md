@@ -73,7 +73,7 @@ class _DemoAppStateState extends State<DemoAppState> {
   }
 }
 ```
-<img src="https://raw.githubusercontent.com/ArefkhattabGit/audio_player_plus/refs/heads/master/lib/screenshots/custom_audio.png" width="372" height="752" alt="AudioPlayerPlus""/>
+<img src="https://raw.githubusercontent.com/ArefkhattabGit/audio_player_plus/refs/heads/master/lib/screenshots/demo.png" alt="AudioPlayerPlus" width="372" height="752"/>
 
 ### Use Custom Ui
 Customizable audio player widget
