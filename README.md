@@ -27,7 +27,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  audio_player_plus: ^0.0.4
+  audio_player_plus: ^0.1.0
 ```
 
 ### Use
