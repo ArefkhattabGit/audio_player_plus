@@ -45,14 +45,14 @@ class _DemoAppStateState extends State<DemoAppState> {
             customBuilder: (
               context,
               isPlaying,
-              currentTime,
-              totalTime,
+              currentDuration,
+              endDuration,
               onPlayPause,
               onStop,
               onSeek,
             ) {
-              final currentSeconds = parseDurationToSeconds(currentTime);
-              final totalSeconds = parseDurationToSeconds(totalTime);
+              final currentSeconds = parseDurationToSeconds(currentDuration);
+              final totalSeconds = parseDurationToSeconds(endDuration);
 
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -102,7 +102,7 @@ class _DemoAppStateState extends State<DemoAppState> {
                         ),
                         const SizedBox(width: 12),
                         Text(
-                          '$currentTime / $totalTime',
+                          '$currentDuration / $endDuration',
                           style:
                               TextStyle(fontSize: 14, color: Colors.grey[800]),
                         ),

@@ -166,14 +166,14 @@ class AudioPlayerPlusState extends State<AudioPlayerPlus> {
     final builder = widget.customBuilder ?? defaultUI;
 
     /// Format position duration
-    final formattedCurrent = Utils.formatDuration(current);
-    final formattedTotal = Utils.formatDuration(total);
+    final currentDuration = Utils.formatDuration(current);
+    final endDuration = Utils.formatDuration(total);
 
     return builder(
       context,
       isPlaying,
-      formattedCurrent,
-      formattedTotal,
+      currentDuration,
+      endDuration,
       togglePlayPause,
       stop,
       seekTo,
