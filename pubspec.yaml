@@ -1,6 +1,6 @@
 name: audio_player_plus
 description: "A simple audio player package to preview and control audio sounds ."
-version: 0.1.4
+version: 0.1.5
 homepage: https://github.com/ArefkhattabGit/audio_player_plus.git
 
 environment:
