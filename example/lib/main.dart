@@ -37,20 +37,21 @@ class _DemoAppStateState extends State<DemoAppState> {
           title: const Text('Custom Audio Player Plus Demo'),
           elevation: 4,
         ),
+
         body: ListView.builder(
           padding: EdgeInsets.all(8.0),
           itemCount: audioUrls.length,
-          itemBuilder: (context, index) => AudioPlayerPlus(showAudioSlider: true,
+          itemBuilder: (context, index) => AudioPlayerPlus(
             audioPath: audioUrls[index],
             customBuilder: (
-              context,
-              isPlaying,
-              currentDuration,
-              endDuration,
-              onPlayPause,
-              onStop,
-              onSeek,
-            ) {
+                context,
+                isPlaying,
+                currentDuration,
+                endDuration,
+                onPlayPause,
+                onStop,
+                onSeek,
+                ) {
               final currentSeconds = parseDurationToSeconds(currentDuration);
               final totalSeconds = parseDurationToSeconds(endDuration);
 
@@ -104,7 +105,7 @@ class _DemoAppStateState extends State<DemoAppState> {
                         Text(
                           '$currentDuration / $endDuration',
                           style:
-                              TextStyle(fontSize: 14, color: Colors.grey[800]),
+                          TextStyle(fontSize: 14, color: Colors.grey[800]),
                         ),
                       ],
                     ),

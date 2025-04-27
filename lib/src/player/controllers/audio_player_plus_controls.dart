@@ -1,4 +1,4 @@
-import '../../audio_player_plus.dart';
+import '../../../audio_player_plus.dart';
 
 class AudioPlayerController {
   static final AudioPlayerController _instance = AudioPlayerController._internal();

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-import '../../audio_player_plus.dart';
+import '../../../audio_player_plus.dart';
 import '../utils/utils.dart';
 
 class AudioPlayerPlus extends StatefulWidget {
   /// audio file source
   final String audioPath;
+
   /// show the audio slider default Ui
   final bool showAudioSlider;
   final Widget Function(
@@ -25,7 +26,7 @@ class AudioPlayerPlus extends StatefulWidget {
   final Color? overlayColor;
   final double? trackHeight;
 
-  const AudioPlayerPlus({
+  AudioPlayerPlus({
     super.key,
     required this.audioPath,
     this.customBuilder,
@@ -34,8 +35,25 @@ class AudioPlayerPlus extends StatefulWidget {
     this.inactiveTrackColor,
     this.thumbColor,
     this.overlayColor,
-    this.trackHeight,
-  });
+    this.trackHeight = 0.8,
+  })  : assert(trackHeight! >= 0.8 && trackHeight <= 10,
+            'Slider height must be between 0.5 and 10.0'),
+        assert(
+            customBuilder == null ||
+                (activeTrackColor == null &&
+                    inactiveTrackColor == null &&
+                    thumbColor == null &&
+                    overlayColor == null &&
+                    trackHeight == 0.8 &&
+                    showAudioSlider == true),
+            'Cannot provide custom values (activeTrackColor,'
+                ' inactiveTrackColor,'
+                ' thumbColor,'
+                ' overlayColor,'
+                ' trackHeight,'
+                ' or showAudioSlider) if customBuilder is used'),
+        assert(audioPath != '', 'audioPath should not be empty'),
+  super();
 
   @override
   AudioPlayerPlusState createState() => AudioPlayerPlusState();
@@ -54,13 +72,13 @@ class AudioPlayerPlusState extends State<AudioPlayerPlus> {
   /// Track if the audio is playing
   bool isPlaying = false;
 
-
   @override
   void initState() {
     super.initState();
     loadDuration();
     setupDurationListeners();
-    final savedPosition = AudioPlayerController.instance.getSavedPosition(widget.audioPath);
+    final savedPosition =
+        AudioPlayerController.instance.getSavedPosition(widget.audioPath);
     if (savedPosition != null) {
       setCurrentPosition(savedPosition);
     }
@@ -98,13 +116,15 @@ class AudioPlayerPlusState extends State<AudioPlayerPlus> {
       debugPrint('Failed to load duration: $e');
     }
   }
+
   // play audio control
   Future<void> play() async {
     // Register the player controller
     AudioPlayerController.instance.register(this);
     await audioPlayer.setSourceUrl(widget.audioPath);
 
-    final savedPosition = AudioPlayerController.instance.getSavedPosition(widget.audioPath);
+    final savedPosition =
+        AudioPlayerController.instance.getSavedPosition(widget.audioPath);
     if (savedPosition != null && savedPosition > Duration.zero) {
       // Seek to the saved position if any
       await audioPlayer.seek(savedPosition);
@@ -126,12 +146,14 @@ class AudioPlayerPlusState extends State<AudioPlayerPlus> {
   /// stop audio control
   Future<void> stop() async {
     await audioPlayer.stop();
-    AudioPlayerController.instance.resetPosition(widget.audioPath); // Reset position
+    AudioPlayerController.instance
+        .resetPosition(widget.audioPath); // Reset position
     setState(() {
       isPlaying = false; // Update the play state to stopped
       current = Duration.zero; // Reset the position to the start
     });
   }
+
   /// Update the current position
   void setCurrentPosition(Duration position) {
     setState(() {
@@ -142,9 +164,11 @@ class AudioPlayerPlusState extends State<AudioPlayerPlus> {
   Future<void> seekTo(double value) async {
     /// Convert the value to a Duration
     final position = Duration(seconds: value.toInt());
+
     /// Seek to the new position
     await audioPlayer.seek(position);
     setCurrentPosition(position);
+
     /// Save the new position
     AudioPlayerController.instance.savePosition(widget.audioPath, position);
   }
@@ -193,7 +217,8 @@ class AudioPlayerPlusState extends State<AudioPlayerPlus> {
       mainAxisSize: MainAxisSize.min,
       children: [
         /// Display current and total duration
-        Text("$formattedCurrent / $formattedTotal",
+        Text(
+          "$formattedCurrent / $formattedTotal",
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
@@ -207,12 +232,13 @@ class AudioPlayerPlusState extends State<AudioPlayerPlus> {
               activeTrackColor: widget.activeTrackColor ?? Colors.blueAccent,
               inactiveTrackColor: widget.inactiveTrackColor ?? Colors.grey[300],
               thumbColor: widget.thumbColor ?? Colors.blueAccent,
-              overlayColor: widget.overlayColor ?? Colors.blue.withOpacity(0.2),
+              overlayColor: widget.overlayColor ?? Colors.blue.withAlpha(51),
               trackHeight: widget.trackHeight ?? 4.0,
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8.0),
             ),
             child: Slider(
               value: current.inSeconds.toDouble(),
+
               /// Current position in seconds
               max: total.inSeconds.toDouble() > 0
                   ? total.inSeconds.toDouble()

@@ -1,17 +1,17 @@
 # AudioPlayerPlus
 
-A customizable Flutter audio player, designed to be reusable, flexible, and easy to integrate in list views with automatic stop/play control.
+**AudioPlayerPlus** package is a Flutter audio player, designed to be reusable, flexible, and easy to integrate in list views with automatic stop/play control.
 
 ---
 
 ## Features
 
-- Supports local file audio playback
+- Supports assets\network audio playback
 - Customizable player UI via `customBuilder`
 - Play, pause, and stop controls
 - Duration formatting (`mm:ss`)
 - Support `slider` audio and seek 
-- modify Slider color
+- change Slider color
 
 ---
 
@@ -24,11 +24,10 @@ A customizable Flutter audio player, designed to be reusable, flexible, and easy
 
 ### 1. Install Dependencies
 
-Add to your `pubspec.yaml`:
-
+Add the `audio_player_plus` **pubspec dependencies**
 ```yaml
 dependencies:
-  audio_player_plus: ^0.1.3
+  audio_player_plus: ^0.1.4
 ```
 
 ### Use
@@ -67,7 +66,7 @@ class _DemoAppStateState extends State<DemoAppState> {
           padding: EdgeInsets.all(8.0),
           itemCount: audioUrls.length,
           itemBuilder: (context, index) => AudioPlayerPlus(
-             audioSource: audioUrls[index],
+            audioPath: audioUrls[index],
           ),
         ),
       ),
