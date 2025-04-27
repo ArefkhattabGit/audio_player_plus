@@ -1,6 +1,6 @@
 # AudioPlayerPlus
 
-**AudioPlayerPlus** package is a Flutter audio player, designed to be reusable, flexible, and easy to integrate in list views with automatic stop/play control.
+**AudioPlayerPlus** is a Flutter audio player package, designed to be reusable, flexible, and easy to integrate in list views with automatic stop/play control.
 
 ---
 
