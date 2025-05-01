@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
@@ -5,20 +7,20 @@ import '../../../audio_player_plus.dart';
 import '../utils/utils.dart';
 
 class AudioPlayerPlus extends StatefulWidget {
-  /// audio file source
+  /// Audio file source
   final String audioPath;
 
-  /// show the audio slider default Ui
+  /// Show the audio slider default UI
   final bool showAudioSlider;
   final Widget Function(
-    BuildContext context,
-    bool isPlaying,
-    String currentAudioDuration,
-    String endAudioDuration,
-    VoidCallback onPlayPause,
-    VoidCallback onStop,
-    Function(double) onSeek,
-  )? customBuilder;
+      BuildContext context,
+      bool isPlaying,
+      String currentAudioDuration,
+      String endAudioDuration,
+      VoidCallback onPlayPause,
+      VoidCallback onStop,
+      Function(double) onSeek,
+      )? customBuilder;
 
   final Color? activeTrackColor;
   final Color? inactiveTrackColor;
@@ -37,29 +39,28 @@ class AudioPlayerPlus extends StatefulWidget {
     this.overlayColor,
     this.trackHeight = 0.8,
   })  : assert(trackHeight! >= 0.8 && trackHeight <= 10,
-            'Slider height must be between 0.5 and 10.0'),
+  'Slider height must be between 0.8 and 10.0'),
         assert(
-            customBuilder == null ||
-                (activeTrackColor == null &&
-                    inactiveTrackColor == null &&
-                    thumbColor == null &&
-                    overlayColor == null &&
-                    trackHeight == 0.8 &&
-                    showAudioSlider == true),
-            'Cannot provide custom values (activeTrackColor,'
-                ' inactiveTrackColor,'
-                ' thumbColor,'
-                ' overlayColor,'
-                ' trackHeight,'
-                ' or showAudioSlider) if customBuilder is used'),
-        assert(audioPath != '', 'audioPath should not be empty'),
-  super();
+        customBuilder == null ||
+            (activeTrackColor == null &&
+                inactiveTrackColor == null &&
+                thumbColor == null &&
+                overlayColor == null &&
+                trackHeight == 0.8 &&
+                showAudioSlider == true),
+        'Cannot provide custom values (activeTrackColor,'
+            ' inactiveTrackColor,'
+            ' thumbColor,'
+            ' overlayColor,'
+            ' trackHeight,'
+            ' or showAudioSlider) if customBuilder is used'),
+        assert(audioPath != '', 'audioPath should not be empty');
 
   @override
   AudioPlayerPlusState createState() => AudioPlayerPlusState();
 }
 
-class AudioPlayerPlusState extends State<AudioPlayerPlus> {
+class AudioPlayerPlusState extends State<AudioPlayerPlus> with WidgetsBindingObserver {
   /// Audio player instance
   final AudioPlayer audioPlayer = AudioPlayer();
 
@@ -75,12 +76,33 @@ class AudioPlayerPlusState extends State<AudioPlayerPlus> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this); // Add lifecycle observer
     loadDuration();
     setupDurationListeners();
     final savedPosition =
-        AudioPlayerController.instance.getSavedPosition(widget.audioPath);
+    AudioPlayerController.instance.getSavedPosition(widget.audioPath);
     if (savedPosition != null) {
       setCurrentPosition(savedPosition);
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this); // Remove lifecycle observer
+    AudioPlayerController.instance.unregister(this);
+    audioPlayer.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused && isPlaying) {
+      // App is in the background, save position
+      AudioPlayerController.instance.savePosition(widget.audioPath, current);
+    } else if (state == AppLifecycleState.resumed && isPlaying) {
+      // App is back in the foreground, resume playback if needed
+      audioPlayer.resume();
     }
   }
 
@@ -117,37 +139,61 @@ class AudioPlayerPlusState extends State<AudioPlayerPlus> {
     }
   }
 
-  // play audio control
+  // Play audio control
   Future<void> play() async {
-    // Register the player controller
-    AudioPlayerController.instance.register(this);
-    await audioPlayer.setSourceUrl(widget.audioPath);
+    try {
+      AudioPlayerController.instance.register(this);
+      await audioPlayer.setSourceUrl(widget.audioPath);
 
-    final savedPosition =
-        AudioPlayerController.instance.getSavedPosition(widget.audioPath);
-    if (savedPosition != null && savedPosition > Duration.zero) {
-      // Seek to the saved position if any
-      await audioPlayer.seek(savedPosition);
-      // Update the current position
-      setCurrentPosition(savedPosition);
+      // Set audio attributes for background playback based on platform
+      AudioContext audioContext;
+      if (Platform.isIOS) {
+        audioContext = AudioContext(
+          iOS: AudioContextIOS(
+            category: AVAudioSessionCategory.playback,
+            options: {
+              AVAudioSessionOptions.mixWithOthers,
+            },
+          ),
+        );
+      } else {
+        audioContext = AudioContext(
+          android: AudioContextAndroid(
+            isSpeakerphoneOn: false,
+            stayAwake: true,
+            contentType: AndroidContentType.music,
+            usageType: AndroidUsageType.media,
+            audioFocus: AndroidAudioFocus.gain,
+          ),
+        );
+      }
+      await audioPlayer.setAudioContext(audioContext);
+      print('Audio context set successfully for ${Platform.isIOS ? 'iOS' : 'Android'}');
+
+      final savedPosition =
+      AudioPlayerController.instance.getSavedPosition(widget.audioPath);
+      if (savedPosition != null && savedPosition > Duration.zero) {
+        await audioPlayer.seek(savedPosition);
+        setCurrentPosition(savedPosition);
+      }
+
+      await audioPlayer.resume();
+      setState(() => isPlaying = true);
+    } catch (e) {
+      print('Error in play: $e');
     }
-
-    await audioPlayer.resume();
-    setState(() => isPlaying = true);
   }
-
-  /// pause audio control
+  /// Pause audio control
   Future<void> pause() async {
     await audioPlayer.pause();
     AudioPlayerController.instance.savePosition(widget.audioPath, current);
     setState(() => isPlaying = false);
   }
 
-  /// stop audio control
+  /// Stop audio control
   Future<void> stop() async {
     await audioPlayer.stop();
-    AudioPlayerController.instance
-        .resetPosition(widget.audioPath); // Reset position
+    AudioPlayerController.instance.resetPosition(widget.audioPath); // Reset position
     setState(() {
       isPlaying = false; // Update the play state to stopped
       current = Duration.zero; // Reset the position to the start
@@ -171,13 +217,6 @@ class AudioPlayerPlusState extends State<AudioPlayerPlus> {
 
     /// Save the new position
     AudioPlayerController.instance.savePosition(widget.audioPath, position);
-  }
-
-  @override
-  void dispose() {
-    AudioPlayerController.instance.unregister(this);
-    audioPlayer.dispose();
-    super.dispose();
   }
 
   void togglePlayPause() {
@@ -205,14 +244,14 @@ class AudioPlayerPlusState extends State<AudioPlayerPlus> {
   }
 
   Widget defaultUI(
-    BuildContext context,
-    bool isPlaying,
-    String formattedCurrent,
-    String formattedTotal,
-    VoidCallback onPlayPause,
-    VoidCallback onStop,
-    Function(double) onSeek,
-  ) {
+      BuildContext context,
+      bool isPlaying,
+      String formattedCurrent,
+      String formattedTotal,
+      VoidCallback onPlayPause,
+      VoidCallback onStop,
+      Function(double) onSeek,
+      ) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -238,12 +277,9 @@ class AudioPlayerPlusState extends State<AudioPlayerPlus> {
             ),
             child: Slider(
               value: current.inSeconds.toDouble(),
-
-              /// Current position in seconds
               max: total.inSeconds.toDouble() > 0
                   ? total.inSeconds.toDouble()
                   : 1.0,
-
               onChanged: (value) {
                 onSeek(value);
               },
