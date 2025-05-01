@@ -1,6 +1,6 @@
 # audio_player_plus
 
-This package package designed to be reusable, flexible, and easy to integrate with automatic play,
+This package designed to be reusable, flexible, and easy to integrate with automatic play,
 pause, and stop control.
 
 ---
