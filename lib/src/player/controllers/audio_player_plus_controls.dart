@@ -2,7 +2,7 @@ import 'package:audio_player_plus/audio_player_plus.dart';
 
 class AudioPlayerController {
   static final AudioPlayerController _instance =
-      AudioPlayerController._internal();
+  AudioPlayerController._internal();
 
   AudioPlayerController._internal();
 

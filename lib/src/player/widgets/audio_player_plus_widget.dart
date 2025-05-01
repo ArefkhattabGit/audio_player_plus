@@ -38,7 +38,8 @@ class AudioPlayerPlus extends StatefulWidget {
     this.thumbColor,
     this.overlayColor,
     this.trackHeight = 0.8,
-  })  : assert(trackHeight! >= 0.8 && trackHeight <= 10,
+  })
+      : assert(trackHeight! >= 0.8 && trackHeight <= 10,
   'Slider height must be between 0.8 and 10.0'),
         assert(
         customBuilder == null ||
@@ -60,7 +61,8 @@ class AudioPlayerPlus extends StatefulWidget {
   AudioPlayerPlusState createState() => AudioPlayerPlusState();
 }
 
-class AudioPlayerPlusState extends State<AudioPlayerPlus> with WidgetsBindingObserver {
+class AudioPlayerPlusState extends State<AudioPlayerPlus>
+    with WidgetsBindingObserver {
   /// Audio player instance
   final AudioPlayer audioPlayer = AudioPlayer();
 
@@ -168,7 +170,9 @@ class AudioPlayerPlusState extends State<AudioPlayerPlus> with WidgetsBindingObs
         );
       }
       await audioPlayer.setAudioContext(audioContext);
-      print('Audio context set successfully for ${Platform.isIOS ? 'iOS' : 'Android'}');
+      print('Audio context set successfully for ${Platform.isIOS
+          ? 'iOS'
+          : 'Android'}');
 
       final savedPosition =
       AudioPlayerController.instance.getSavedPosition(widget.audioPath);
@@ -183,6 +187,7 @@ class AudioPlayerPlusState extends State<AudioPlayerPlus> with WidgetsBindingObs
       print('Error in play: $e');
     }
   }
+
   /// Pause audio control
   Future<void> pause() async {
     await audioPlayer.pause();
@@ -193,7 +198,8 @@ class AudioPlayerPlusState extends State<AudioPlayerPlus> with WidgetsBindingObs
   /// Stop audio control
   Future<void> stop() async {
     await audioPlayer.stop();
-    AudioPlayerController.instance.resetPosition(widget.audioPath); // Reset position
+    AudioPlayerController.instance.resetPosition(
+        widget.audioPath); // Reset position
     setState(() {
       isPlaying = false; // Update the play state to stopped
       current = Duration.zero; // Reset the position to the start
@@ -243,18 +249,17 @@ class AudioPlayerPlusState extends State<AudioPlayerPlus> with WidgetsBindingObs
     );
   }
 
-  Widget defaultUI(
-      BuildContext context,
+  Widget defaultUI(BuildContext context,
       bool isPlaying,
       String formattedCurrent,
       String formattedTotal,
       VoidCallback onPlayPause,
       VoidCallback onStop,
-      Function(double) onSeek,
-      ) {
+      Function(double) onSeek,) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+
         /// Display current and total duration
         Text(
           "$formattedCurrent / $formattedTotal",
