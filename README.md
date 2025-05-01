@@ -14,7 +14,7 @@ pause, and stop control.
   background or the device is locked.
 - Duration formatting (`mm:ss`).
 - Audio `slider` with seek support.
-- Customizable slider color.
+- Customizable `slider` color.
 - Option to show or hide the `slider`.
 
 ---
@@ -27,11 +27,11 @@ pause, and stop control.
 
 ### 1. Install Dependencies
 
-Add the `audio_player_plus` `pubspec.yaml` file:
+Add the `audio_player_plus` inside `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  audio_player_plus: ^0.1.5
+  audio_player_plus: ^0.2.0
 ```
 
 ### Android setup

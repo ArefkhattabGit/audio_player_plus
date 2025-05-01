@@ -1,3 +1,2 @@
-## 0.1.5
-- package code refactoring, without any functionality changes.
-
+## 0.2.0
+- Supports background audio playback, enabling audio to continue when the app is in the background or the screen is locked.
