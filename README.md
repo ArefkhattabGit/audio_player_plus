@@ -7,9 +7,8 @@ pause, and stop control.
 
 ## Features
 
-- Supports asset and network audio playback.
+- Supports `asset` and `network` audio playback.
 - Customizable player UI via `customBuilder`.
-- Play, pause, and stop controls.
 - Support background audio playback, allowing the audio to continue when the app is in the
   background or the device is locked.
 - Duration formatting (`mm:ss`).
